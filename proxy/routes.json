@@ -1,0 +1,14 @@
+{
+  "/": {
+    "chosen": false,
+    "headers": [],
+    "body": "<div />"
+  },
+  "/users/me": [{
+    "chosen": true,
+    "headers": [],
+    "body": {
+      "name": "Mark"
+    }
+  }]
+}

@@ -1,0 +1,18 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #673AB7;
+  color: white;
+}
+
+.connectionState {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  padding: 5px;
+
+  text-align: center;
+
+  background-color: #B71C1C;
+}
