@@ -1,6 +1,6 @@
 import {List, Map, fromJS} from 'immutable';
-
-//import {useProxy, useMockServer} from './mockServer';
+import {stopProxyServer, startProxyServer} from './proxyServer';
+import {loop, Effects} from 'redux-loop';
 
 export const INITIAL_STATE = Map({
   routes: Map(),
@@ -28,6 +28,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       return request.set('keeping', !curValue);
     });
   case 'ADD_REQUEST':
+    console.log('ADD_REQUEST');
     const newRequestData = {
       id: action.hash,
       chosen: false,
@@ -39,12 +40,18 @@ export default function reducer(state = INITIAL_STATE, action) {
       ['routes', action.path, action.hash],
       Map(newRequestData)
     );
-  case 'TOGGLE_RECORDING':
-    // if recording, useProxy
-    // else, useMockServer
-    return state.set(!state.get('isRecording'));
+  case 'RECORD_TOGGLE':
+    const isRecording = state.get('isRecording');
+    if (isRecording) {
+      return loop(state.set('isRecording', !isRecording),
+                  Effects.batch([
+                    Effects.promise(stopProxyServer)
+                  ]));
+    }
+    return state;
+  default:
+    return state;
   }
-  return state;
 }
 
 // {

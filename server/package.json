@@ -24,6 +24,7 @@
     "immutable": "3.7.6",
     "md5": "^2.1.0",
     "redux": "3.3.1",
+    "redux-loop": "^2.2.2",
     "socket.io": "1.4.5"
   },
   "babel": {

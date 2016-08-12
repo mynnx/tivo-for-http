@@ -2,8 +2,11 @@ var https = require('https');
 var httpProxy = require('http-proxy');
 var zlib = require('zlib')
 
-function startProxyServer({target, privateKey, certificate}, requestCallback) {
-  const server = httpProxy.createServer({
+
+let server = null;
+
+export function startProxyServer({target, privateKey, certificate}, requestCallback) {
+  server = httpProxy.createServer({
     ssl: {
       key: privateKey,
       cert: certificate
@@ -14,6 +17,18 @@ function startProxyServer({target, privateKey, certificate}, requestCallback) {
 
   server.on('proxyRes', intercept.bind(null, requestCallback));
   server.listen(3001);
+  return server;
+}
+
+export function stopProxyServer() {
+  return new Promise((resolve, reject) => {
+    if (!server) resolve();
+    server.close((err) => {
+      console.log(err || 'done');
+      resolve({'type': 'DONE'})
+    });
+  })
+  .catch((err) => {console.log(err)});
 }
 
 function intercept(callback, proxyRes, req, res) {
@@ -31,4 +46,3 @@ function intercept(callback, proxyRes, req, res) {
   });
 }
 
-export default startProxyServer;

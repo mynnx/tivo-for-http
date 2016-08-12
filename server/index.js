@@ -3,7 +3,7 @@ import md5 from 'md5';
 import makeStore from './src/store';
 import {bindActionCreators} from 'redux';
 import {startUIServer} from './src/uiServer';
-import startProxyServer from './src/proxyServer';
+import {startProxyServer} from './src/proxyServer';
 
 const addRequest = (path, data) => ({
   type: 'ADD_REQUEST',
