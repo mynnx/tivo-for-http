@@ -1,21 +1,35 @@
+ /*
+  * The state tree looks like this:
+  * {
+  *   routes: {
+  *     '/users/me/referrals': {
+  *       'o2338hf33123': {
+  *         id: 'o2338hf33123',
+  *         data: "{}",
+  *         chosen: true,
+  *         keeping: true,
+  *       }
+  *     }
+  *   }
+  * }
+  */
+
 import {List, Map, fromJS} from 'immutable';
 import {loop, Effects} from 'redux-loop';
 import toggleServer, {updateMockServerRoutes} from './server';
 
-function refreshRoutes(routes) {
-  console.log("going to refresh routes...");
+function refreshRoutes(mockServerRunning, routes) {
+  if (!mockServerRunning) return Promise.resolve({type: 'REFRESH_ROUTES_SUCCESS'});
+
   return updateMockServerRoutes(routes)
     .then(() => {console.log("refreshed."); return {type: 'REFRESH_ROUTES_SUCCESS'}})
     .catch((err) => {console.log("refresh error!", err); return {type: 'REFRESH_ROUTES_FAILURE', err}});
 }
 
 function toggleServerEffect(which, routes) {
-  console.log("going to toggle...", routes);
   return toggleServer(which, routes)
     .then(() => {console.log("toggle success."); return {type: 'TOGGLE_SERVER_SUCCESS'}})
     .catch((err) => {console.log("toggle error!", err); return {type: 'TOGGLE_SERVER_FAILURE', err}});
-    // .then(() => ({type: 'TOGGLE_SERVER_SUCCESS'}))
-    // .catch((err) => ({type: 'TOGGLE_SERVER_FAILURE', err}));
 }
 
 export const INITIAL_STATE = Map({
@@ -37,7 +51,11 @@ export default function reducer(state = INITIAL_STATE, action) {
         return request.set('chosen', false);
       });
     });
-    return loop(newState, Effects.promise(refreshRoutes, state.get('routes').toJS()));
+    return loop(newState,
+                Effects.promise(
+                  refreshRoutes,
+                  !state.get('isRecording'),
+                  state.get('routes').toJS()));
   case 'REQUEST_KEEP':
     return state.updateIn(['routes', action.path, action.id], (request) => {
       if (!request) return;
@@ -67,13 +85,3 @@ export default function reducer(state = INITIAL_STATE, action) {
   }
 }
 
-// {
-//   routes: {
-//     '/users/me/referrals': {
-//       'o2338hf33123': {
-//         id: 'o2338hf33123',
-//         headers: {}
-//       }
-//     }
-//   }
-// }

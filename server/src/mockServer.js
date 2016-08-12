@@ -5,16 +5,25 @@ var express = require('express');
 export function getMockApp(routes) {
   const app = express();
 
-  app.get('/users/me', function(req, res) {
-    res.json({first_name: "Whackadoodle", last_name: "the Clown"});
+  const responses = [];
+  for (let path in routes) {
+    let response;
+    for (let requestHash in routes[path]) {
+      let request = routes[path][requestHash];
+      if (request.chosen) {
+        response = request;
+      }
+    }
+    if (response) responses.push({path, response});
+  }
+
+  responses.map(({path, response}) => {
+    app.get(path, (req, res) => {
+      res.json(JSON.parse(response.data))
+    });
   });
 
   return app;
-}
-
-export function updateRoutes(app, routes) {
-  console.log("Doing some magic...", app, routes);
-  return Promise.resolve();
 }
 
 export function getMockServer({target, privateKey, certificate}, app) {
@@ -41,6 +50,8 @@ export function startMockServer(server) {
 
 export function stopMockServer(server) {
   return new Promise((resolve, reject) => {
+    if (!server) return reject(new Error('No server'));
+
     server.close((err) => {
       if (err) return reject(err);
       return resolve();

@@ -1,16 +1,18 @@
 import {startProxyServer, stopProxyServer} from './proxyServer';
-import {startMockServer,
+import {
+  getMockServer,
+  getMockApp,
+  startMockServer,
   stopMockServer,
-  updateRoutes} from './mockServer';
-import store from './store';
+  updateRoutes
+} from './mockServer';
 
 let proxyServer;
+let mockServerConfig;
 let mockServer;
-let mockServerApp;
-export function init(proxy, mock, app) {
+export function init(proxy, mockConfig) {
   proxyServer = proxy;
-  mockServer = mock;
-  mockServerApp = app;
+  mockServerConfig = mockConfig;
 }
 
 export default function toggleServer(proxyOrMock, routes) {
@@ -26,11 +28,21 @@ export default function toggleServer(proxyOrMock, routes) {
   return stopProxyServer(proxyServer)
     .catch((err) => console.log(err))
     .then(() => console.log("Proxy server stopped"))
-    .then(() => updateMockServerRoutes(routes))
-    .then(() => startMockServer(mockServer))
+    .then(() => mockServerWithRoutes(routes))
+    .then((_mockServer) => {
+      mockServer = _mockServer;
+      startMockServer(mockServer)
+    })
     .then(() => console.log("Mock server started"));
 }
 
-export function updateMockServerRoutes(routes) {
-  return updateRoutes(mockServerApp, routes);
+export function mockServerWithRoutes(routes) {
+  const mockApp = getMockApp(routes);
+  const mockServer = getMockServer(mockServerConfig, mockApp);
+  return mockServer;
 };
+
+export function updateMockServerRoutes(routes) {
+  console.log('Updating mock server routes');
+  return Promise.resolve();
+}
