@@ -1,3 +1,20 @@
+export const keepRequest = (id) => ({
+  type: 'REQUEST_KEEP',
+  id,
+  meta: { remote: true }
+});
+
+export const chooseRequest = (id) => ({
+  type: 'REQUEST_CHOOSE',
+  id,
+  meta: { remote: true }
+});
+
+export const toggleRecording = () => ({
+  type: 'RECORD_TOGGLE',
+  meta: { remote: true }
+});
+
 export function setClientId(clientId) {
   return {
     type: 'SET_CLIENT_ID',

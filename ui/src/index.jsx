@@ -5,7 +5,7 @@ import {compose, createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 
 import io from 'socket.io-client';
-import {setClientId, setState, setConnectionState} from './action_creators';
+import {setClientId, setState, setConnectionState} from './actionCreators';
 import getClientId from './client_id';
 import remoteActionMiddleware from './remote_action_middleware';
 

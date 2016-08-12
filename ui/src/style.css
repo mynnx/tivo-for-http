@@ -4,6 +4,19 @@ body {
   color: white;
 }
 
+.request-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.request {
+  background: rgb(50, 50, 50);
+  display: inline-block;
+  max-width: 500px;
+  margin: 20px;
+  padding: 20px;
+}
+
 .connectionState {
   position: fixed;
   top: 0;

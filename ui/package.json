@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --inline --hot",
+    "start": "./node_modules/.bin/webpack-dev-server --inline --hot"
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +34,7 @@
     "react-dom": "0.14.7",
     "react-redux": "4.4.0",
     "react-router": "2.0.0",
+    "react-syntax-highlighter": "^2.2.0",
     "redux": "3.3.1",
     "socket.io-client": "1.4.5",
     "uuid": "2.0.1"
