@@ -24,7 +24,8 @@ export default function reducer(state = INITIAL_STATE, action) {
     return state.updateIn(['routes', action.path], (requests) => {
       return requests.map((request) => {
         if (request.get('id') === action.id) {
-          return request.set('chosen', true);
+          return request.set('chosen', true)
+                        .set('keeping', true)
         }
         return request.set('chosen', false);
       });
