@@ -2,13 +2,22 @@ var https = require('https');
 var http = require('http');
 var express = require('express');
 
-export function getMockServer({target, privateKey, certificate}) {
+export function getMockApp(routes) {
   const app = express();
 
   app.get('/users/me', function(req, res) {
     res.json({first_name: "Whackadoodle", last_name: "the Clown"});
   });
 
+  return app;
+}
+
+export function updateRoutes(app, routes) {
+  console.log("Doing some magic...", app, routes);
+  return Promise.resolve();
+}
+
+export function getMockServer({target, privateKey, certificate}, app) {
   const server = http.createServer(app);
   // const server = https.createServer({
   //   ssl: {
@@ -37,8 +46,4 @@ export function stopMockServer(server) {
       return resolve();
     });
   });
-}
-
-export function updateRoutes(server, routes) {
-  return Promise.resolve();
 }

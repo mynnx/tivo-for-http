@@ -1,12 +1,19 @@
 import {List, Map, fromJS} from 'immutable';
 import {loop, Effects} from 'redux-loop';
-import toggleServer from './server';
+import toggleServer, {updateMockServerRoutes} from './server';
 
-function toggleServerEffect(which) {
-  console.log("going to toggle...");
-  return toggleServer(which)
-    .then(() => {console.log("success!"); return {type: 'TOGGLE_SERVER_SUCCESS'}})
-    .catch((err) => {console.log("error!", err); return {type: 'TOGGLE_SERVER_FAILURE', err}});
+function refreshRoutes(routes) {
+  console.log("going to refresh routes...");
+  return updateMockServerRoutes(routes)
+    .then(() => {console.log("refreshed."); return {type: 'REFRESH_ROUTES_SUCCESS'}})
+    .catch((err) => {console.log("refresh error!", err); return {type: 'REFRESH_ROUTES_FAILURE', err}});
+}
+
+function toggleServerEffect(which, routes) {
+  console.log("going to toggle...", routes);
+  return toggleServer(which, routes)
+    .then(() => {console.log("toggle success."); return {type: 'TOGGLE_SERVER_SUCCESS'}})
+    .catch((err) => {console.log("toggle error!", err); return {type: 'TOGGLE_SERVER_FAILURE', err}});
     // .then(() => ({type: 'TOGGLE_SERVER_SUCCESS'}))
     // .catch((err) => ({type: 'TOGGLE_SERVER_FAILURE', err}));
 }
@@ -21,7 +28,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   case 'SET_ROUTES':
     return state.set('routes', fromJS(action.routes));
   case 'REQUEST_CHOOSE':
-    return state.updateIn(['routes', action.path], (requests) => {
+    const newState = state.updateIn(['routes', action.path], (requests) => {
       return requests.map((request) => {
         if (request.get('id') === action.id) {
           return request.set('chosen', true)
@@ -30,6 +37,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         return request.set('chosen', false);
       });
     });
+    return loop(newState, Effects.promise(refreshRoutes, state.get('routes').toJS()));
   case 'REQUEST_KEEP':
     return state.updateIn(['routes', action.path, action.id], (request) => {
       if (!request) return;
@@ -52,7 +60,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   case 'RECORD_TOGGLE':
     const isRecording = state.get('isRecording');
     return loop(state.set('isRecording', !isRecording),
-                Effects.promise(toggleServerEffect, !isRecording));
+                Effects.promise(toggleServerEffect, !isRecording, state.get('routes').toJS()));
     return state;
   default:
     return state;

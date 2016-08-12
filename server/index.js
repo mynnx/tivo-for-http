@@ -2,7 +2,7 @@ import fs from 'fs';
 import makeStore from './src/store';
 import {startUIServer} from './src/uiServer';
 import {getProxyServer} from './src/proxyServer';
-import {getMockServer} from './src/mockServer';
+import {getMockServer, getMockApp} from './src/mockServer';
 import toggleServer, {init as serverInit} from './src/server';
 
 import {bindActionCreators} from 'redux';
@@ -30,12 +30,15 @@ const proxyServer = getProxyServer(
   config.proxy,
   bindActionCreators(addRequest, store.dispatch)
 );
+const mockApp = getMockApp({});
+const mockServer = getMockServer(config.mock, mockApp);
+serverInit(proxyServer, mockServer, mockApp);
 
-const mockServer = getMockServer(config.mock);
-serverInit(proxyServer, mockServer);
+import {stopProxyServer} from './src/proxyServer';
+stopProxyServer(proxyServer);
 
 startUIServer(store);
-toggleServer(true)
+toggleServer(true, {})
     .then(() => store.dispatch(setRoutes({})))
     .catch((err) => console.error(err));
 
