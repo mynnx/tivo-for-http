@@ -1,11 +1,13 @@
-export const keepRequest = (id) => ({
+export const keepRequest = (path, id) => ({
   type: 'REQUEST_KEEP',
+  path,
   id,
   meta: { remote: true }
 });
 
-export const chooseRequest = (id) => ({
+export const chooseRequest = (path, id) => ({
   type: 'REQUEST_CHOOSE',
+  path,
   id,
   meta: { remote: true }
 });

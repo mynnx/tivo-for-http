@@ -17,6 +17,10 @@ body {
   padding: 20px;
 }
 
+.active {
+  background: #F00;
+}
+
 .connectionState {
   position: fixed;
   top: 0;

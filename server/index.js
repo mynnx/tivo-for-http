@@ -1,13 +1,15 @@
 import fs from 'fs';
+import md5 from 'md5';
 import makeStore from './src/store';
 import {bindActionCreators} from 'redux';
 import {startUIServer} from './src/uiServer';
 import startProxyServer from './src/proxyServer';
 
-const addRoute = (path, data) => ({
-  type: 'ADD_ROUTE',
+const addRequest = (path, data) => ({
+  type: 'ADD_REQUEST',
   path,
-  data
+  data,
+  hash: md5(path + data)
 })
 
 const config = {
@@ -17,7 +19,7 @@ const config = {
 };
 
 export const store = makeStore();
-startProxyServer(config, bindActionCreators(addRoute, store.dispatch));
+startProxyServer(config, bindActionCreators(addRequest, store.dispatch));
 
 startUIServer(store);
 store.dispatch({

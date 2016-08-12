@@ -13,8 +13,8 @@ const App = (props) => {
   const {keep, choose, toggleRecord} = props;
 
   return <div className="container">
-    <RecordButton isRecording={isRecording} />
     <ConnectionState connected={connection.connected} state={connection.state}/>
+    <RecordButton isRecording={isRecording} onToggle={toggleRecord} />
     {Object.keys(routes).map((route) => (
       <RequestPath path={route}
                    requests={routes[route]}
@@ -29,31 +29,32 @@ const RequestPath = ({path, requests, onKeep, onChoose}) => (
   <div>
     <h3>{path}</h3>
     <div className="request-container">
-      {requests.map(({id, active, keep, data}) => (
-        <Request active={active}
-                 keeping={keep}
+      {Object.keys(requests).map((reqId) => {
+        const request = requests[reqId];
+        const {id, chosen, keeping, data} = request;
+        return <Request chosen={chosen}
+                 keeping={keeping}
                  data={data}
-                 onKeep={onKeep.bind(null, id)}
-                 onChoose={onChoose.bind(null, id)} />
-      ))}
+                 onKeep={onKeep.bind(null, path, id)}
+                 onChoose={onChoose.bind(null, path, id)} />
+      })}
     </div>
   </div>
 );
 
-const Request = ({data, onChoose, onKeep}) => (
+const Request = ({data, chosen, keeping, onChoose, onKeep}) => (
   <div className="request">
     <SyntaxHighlighter language='json' style={railscasts}>
       {data}
     </SyntaxHighlighter>
-    <button onClick={onChoose}>Choose</button>
-    <button onClick={onKeep}>Choose</button>
+    <button onClick={onChoose} className={chosen ? 'active' : null}>Choose</button>
+    <button onClick={onKeep} className={keeping ? 'active' : null}>Keep</button>
   </div>
 );
 
 const RecordButton = ({isRecording, onToggle}) => {
-  const btnClass = classnames('modeButton', {'record': isRecording, 'play': !isRecording});
   return <button onClick={onToggle}
-                 className={btnClass}>Record</button>
+                 className={isRecording ? 'active' : null}>Record</button>
 }
 
 const mapStateToProps = (state) => ({
@@ -63,8 +64,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  keep: (requestId) => dispatch(keepRequest(requestId)),
-  choose: (requestId) => dispatch(chooseRequest(requestId)),
+  keep: (path, requestId) => dispatch(keepRequest(path, requestId)),
+  choose: (path, requestId) => dispatch(chooseRequest(path, requestId)),
   toggleRecord: () => dispatch(toggleRecording())
 });
 

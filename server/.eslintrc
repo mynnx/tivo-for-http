@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "@earnest/eslint-config-es7",
+    "plugin:react/recommended"
+  ],
+  "parser": "babel-eslint",
+  "settings": {
+    "jsx": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "react/prop-types": 0
+  }
+}

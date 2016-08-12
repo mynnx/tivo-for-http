@@ -17,9 +17,7 @@ function startProxyServer({target, privateKey, certificate}, requestCallback) {
 }
 
 function intercept(callback, proxyRes, req, res) {
-  console.log("got one!");
   console.log(`request for ${req.url}`);
-  console.log("response headers", proxyRes.headers);
 
   let body = '';
   const gz = zlib.createGunzip();
