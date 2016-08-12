@@ -28,7 +28,6 @@ export default function reducer(state = INITIAL_STATE, action) {
       return request.set('keeping', !curValue);
     });
   case 'ADD_REQUEST':
-    console.log('ADD_REQUEST');
     const newRequestData = {
       id: action.hash,
       chosen: false,

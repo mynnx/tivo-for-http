@@ -1,28 +1,41 @@
 import fs from 'fs';
-import md5 from 'md5';
 import makeStore from './src/store';
-import {bindActionCreators} from 'redux';
 import {startUIServer} from './src/uiServer';
-import {startProxyServer} from './src/proxyServer';
+import {getProxyServer} from './src/proxyServer';
+import {getMockServer} from './src/mockServer';
+import startServer, {init as serverInit} from './src/server';
 
-const addRequest = (path, data) => ({
-  type: 'ADD_REQUEST',
-  path,
-  data,
-  hash: md5(path + data)
-})
+import {bindActionCreators} from 'redux';
+import {addRequest} from './src/actionCreators';
+
+const privateKey = fs.readFileSync('localhost.key').toString();
+const certificate = fs.readFileSync('localhost.crt').toString();
 
 const config = {
-  target: 'https://0.0.0.0:3000/',
-  privateKey: fs.readFileSync('localhost.key').toString(),
-  certificate: fs.readFileSync('localhost.crt').toString()
+  proxy: {
+    target: 'https://0.0.0.0:3000/',
+    port: 3001,
+    privateKey,
+    certificate
+  },
+  mock: {
+
+  },
 };
 
 export const store = makeStore();
-startProxyServer(config, bindActionCreators(addRequest, store.dispatch));
 
 startUIServer(store);
+const proxyServer = getProxyServer(
+  config.proxy,
+  bindActionCreators(addRequest, store.dispatch)
+);
+
+const mockServer = getMockServer(config.mock);
+serverInit(proxyServer, mockServer);
+startServer(true); //'proxy');
+
 store.dispatch({
   type: 'SET_ROUTES',
-  routes: {}//require('./routes.json')
+  routes: {}
 });
