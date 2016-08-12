@@ -2,9 +2,6 @@ import {startProxyServer, stopProxyServer} from './proxyServer';
 import {updateRoutes, startMockServer, stopMockServer} from './mockServer';
 import store from './store';
 
-// export const PROXY_SERVER = true;
-// export const MOCK_SERVER = false;
-
 let proxyServer;
 let mockServer;
 export function init(proxy, mock) {
@@ -12,15 +9,20 @@ export function init(proxy, mock) {
   mockServer = mock;
 }
 
-export default function startServer(proxyOrMock) {
+export default function toggleServer(proxyOrMock) {
   if (proxyOrMock) {
-  // if (proxyOrMock === 'proxy') {
     return stopMockServer(mockServer)
-      .then(() => startProxyServer(proxyServer));
+      .catch((err) => console.log(err))
+      .then(() => console.log("Mock server stopped"))
+      .then(() => startProxyServer(proxyServer))
+      .then(() => console.log("Proxy server started"));
+  }
 
   return stopProxyServer(proxyServer)
-    .then(() => startMockServer(proxyServer));
-  }
+    .catch((err) => console.log(err))
+    .then(() => console.log("Proxy server stopped"))
+    .then(() => startMockServer(mockServer))
+    .then(() => console.log("Mock server started"));
 }
 
 export function updateMockServerRoutes(routes) {

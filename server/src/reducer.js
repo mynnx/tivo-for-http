@@ -1,6 +1,15 @@
 import {List, Map, fromJS} from 'immutable';
-import {stopProxyServer, startProxyServer} from './proxyServer';
 import {loop, Effects} from 'redux-loop';
+import toggleServer from './server';
+
+function toggleServerEffect(which) {
+  console.log("going to toggle...");
+  return toggleServer(which)
+    .then(() => {console.log("success!"); return {type: 'TOGGLE_SERVER_SUCCESS'}})
+    .catch((err) => {console.log("error!", err); return {type: 'TOGGLE_SERVER_FAILURE', err}});
+    // .then(() => ({type: 'TOGGLE_SERVER_SUCCESS'}))
+    // .catch((err) => ({type: 'TOGGLE_SERVER_FAILURE', err}));
+}
 
 export const INITIAL_STATE = Map({
   routes: Map(),
@@ -41,12 +50,8 @@ export default function reducer(state = INITIAL_STATE, action) {
     );
   case 'RECORD_TOGGLE':
     const isRecording = state.get('isRecording');
-    if (isRecording) {
-      return loop(state.set('isRecording', !isRecording),
-                  Effects.batch([
-                    Effects.promise(stopProxyServer)
-                  ]));
-    }
+    return loop(state.set('isRecording', !isRecording),
+                Effects.promise(toggleServerEffect, !isRecording));
     return state;
   default:
     return state;

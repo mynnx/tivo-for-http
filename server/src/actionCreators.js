@@ -6,3 +6,8 @@ export const addRequest = (path, data) => ({
   data,
   hash: md5(path + data)
 });
+
+export const setRoutes = (routes) => ({
+  type: 'SET_ROUTES',
+  routes: {}
+});

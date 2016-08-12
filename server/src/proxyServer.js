@@ -29,7 +29,7 @@ export function stopProxyServer(server) {
   return new Promise((resolve, reject) => {
     server.close((err, msg) => {
       if (err) return reject(err);
-      return resolve(msg);
+      return resolve();
     });
   });
 }

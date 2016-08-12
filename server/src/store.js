@@ -6,3 +6,4 @@ import reducer, {INITIAL_STATE} from './reducer';
 export default function makeStore() {
   return createStore(reducer, install());
 }
+
