@@ -6,6 +6,7 @@
   *       'o2338hf33123': {
   *         id: 'o2338hf33123',
   *         data: "{}",
+  *         headers: "{}",
   *         chosen: true,
   *         keeping: true,
   *       }
@@ -68,7 +69,8 @@ export default function reducer(state = INITIAL_STATE, action) {
       id: action.hash,
       chosen: false,
       keeping: false,
-      data: action.data
+      data: action.data,
+      headers: action.headers,
     };
 
     return state.setIn(

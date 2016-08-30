@@ -45,7 +45,7 @@ function intercept(callback, proxyRes, req, res) {
     .on('end', () => {
       console.log("response body", body);
       const prettyBody = JSON.stringify(JSON.parse(body), null, 2)
-      callback(req.url, prettyBody);
+      callback(req.url, prettyBody, req.headers);
   });
 }
 
