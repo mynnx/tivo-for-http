@@ -1,9 +1,11 @@
 var https = require('https');
 var http = require('http');
 var express = require('express');
+var cors = require('cors');
 
 export function getMockApp(routes) {
   const app = express();
+  app.options('*', cors());
 
   const responses = [];
   for (let path in routes) {
@@ -19,6 +21,7 @@ export function getMockApp(routes) {
 
   responses.map(({path, response}) => {
     app.get(path, (req, res) => {
+      res.set(response.headers);
       res.json(JSON.parse(response.data))
     });
   });
