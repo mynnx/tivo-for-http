@@ -18,6 +18,7 @@
 import {List, Map, fromJS} from 'immutable';
 import {loop, Effects} from 'redux-loop';
 import toggleServer, {updateMockServerRoutes} from './server';
+import {persistRoutes} from './persistence';
 
 function refreshRoutes(mockServerRunning, routes) {
   if (!mockServerRunning) return Promise.resolve({type: 'REFRESH_ROUTES_SUCCESS'});
@@ -28,7 +29,8 @@ function refreshRoutes(mockServerRunning, routes) {
 }
 
 function toggleServerEffect(which, routes) {
-  return toggleServer(which, routes)
+  return persistRoutes(routes)
+    .then(() => toggleServer(which, routes))
     .then(() => {console.log("toggle success."); return {type: 'TOGGLE_SERVER_SUCCESS'}})
     .catch((err) => {console.log("toggle error!", err); return {type: 'TOGGLE_SERVER_FAILURE', err}});
 }

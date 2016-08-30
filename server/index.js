@@ -4,6 +4,7 @@ import {startUIServer} from './src/uiServer';
 import {getProxyServer} from './src/proxyServer';
 import {getMockServer, getMockApp} from './src/mockServer';
 import toggleServer, {init as serverInit} from './src/server';
+import {getPersistedRoutes} from './src/persistence';
 
 import {bindActionCreators} from 'redux';
 import {addRequest, setRoutes} from './src/actionCreators';
@@ -33,7 +34,7 @@ const proxyServer = getProxyServer(
 serverInit(proxyServer, config.mock);
 
 startUIServer(store);
-toggleServer(true, {})
-    .then(() => store.dispatch(setRoutes({})))
+toggleServer(true)
+    .then(() => store.dispatch(setRoutes(getPersistedRoutes())))
     .catch((err) => console.error(err));
 

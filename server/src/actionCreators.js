@@ -10,5 +10,5 @@ export const addRequest = (path, data, headers) => ({
 
 export const setRoutes = (routes) => ({
   type: 'SET_ROUTES',
-  routes: {}
+  routes
 });
