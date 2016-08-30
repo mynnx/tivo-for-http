@@ -27,14 +27,10 @@ export function getMockApp(routes) {
 }
 
 export function getMockServer({target, privateKey, certificate}, app) {
-  const server = http.createServer(app);
-  // const server = https.createServer({
-  //   ssl: {
-  //     key: privateKey,
-  //     cert: certificate
-  //   },
-  //   secure: false
-  // }, app);
+  const server = https.createServer({
+    key: privateKey,
+    cert: certificate
+  }, app);
 
   return server;
 }

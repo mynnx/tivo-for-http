@@ -30,12 +30,7 @@ const proxyServer = getProxyServer(
   config.proxy,
   bindActionCreators(addRequest, store.dispatch)
 );
-const mockApp = getMockApp({});
-const mockServer = getMockServer(config.mock, mockApp);
-serverInit(proxyServer, mockServer, mockApp);
-
-import {stopProxyServer} from './src/proxyServer';
-stopProxyServer(proxyServer);
+serverInit(proxyServer, config.mock);
 
 startUIServer(store);
 toggleServer(true, {})
