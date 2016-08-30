@@ -5,6 +5,7 @@ var cors = require('cors');
 
 export function getMockApp(routes) {
   const app = express();
+  app.use(cors());
   app.options('*', cors());
 
   const responses = [];
